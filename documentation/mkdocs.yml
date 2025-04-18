@@ -19,13 +19,15 @@ theme:
   palette:
     - scheme: default
       toggle:
+#        icon: material/night-weather
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
       primary: indigo
       accent: pink
     - scheme: slate
       toggle:
-        icon: material/toggle-switch
+#        icon: material/weather-night
+        icon: material/toggle-switch-off-outline
         name: Switch to light mode
       primary: indigo
       accent: pink
