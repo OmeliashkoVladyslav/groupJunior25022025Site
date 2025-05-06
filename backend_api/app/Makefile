@@ -4,6 +4,6 @@ init:
 	alembic init migrations
 
 check:
-	black .
+	black . --line-length 120
 	isort .
 	flake8 .
