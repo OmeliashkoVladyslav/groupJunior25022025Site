@@ -1,3 +1,4 @@
+from applications.users.crud import get_user_by_email
 from settings import settings
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
@@ -13,6 +14,11 @@ class AuthHandler:
         self.algorithm = settings.JWT_ALGORITHM
 
     async def get_login_token_pairs(self, data: OAuth2PasswordRequestForm, session: AsyncSession):
-        pass
+        user_email = data.username
+        user_password = data.password
+        user = await get_user_by_email(user_email, session)
+
+        print(user, 898)
+
 
 auth_handler = AuthHandler()
