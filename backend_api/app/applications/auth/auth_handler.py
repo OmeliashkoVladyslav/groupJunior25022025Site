@@ -3,14 +3,12 @@ from datetime import timedelta, datetime
 from applications.auth.password_handler import PasswordEncrypt
 from applications.users.crud import get_user_by_email
 from settings import settings
-from fastapi import  Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 import jwt
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-
-from database.session_dependencies import get_async_session
 
 class AuthHandler:
     def __init__(self):
@@ -36,18 +34,25 @@ class AuthHandler:
             )
 
         tokens = await self.generate_token_pairs(user.id)
+        return tokens
 
-    async def generate_token_pairs(self, user_id):
-        payload = {'user_id': user_id}
+
+    async def generate_token_pairs(self, user_id) -> dict:
+        payload = {"user_id": user_id}
         access_token = await self.create_token(payload, timedelta(minutes=5))
         refresh_token = await self.create_token(payload, timedelta(days=1))
         return {"access_token": access_token, "refresh_token": refresh_token}
 
-    async def create_token(self, payload: dict, expiry: timedelta):
+
+
+    async def create_token(self, payload: dict, expiry: timedelta) -> str:
         now = datetime.now()
         time_payload = {"exp": now + expiry, "iat": now}
         token = jwt.encode(payload | time_payload, self.secret, self.algorithm)
+        print(token)
         return token
+
+
 
 
 auth_handler = AuthHandler()
