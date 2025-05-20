@@ -30,8 +30,8 @@ class AuthHandler:
         tokens = await self.generate_token_pairs(user.id)
         return tokens
 
-    async def generate_token_pairs(self, user_id) -> dict:
-        payload = {"user_id": user_id}
+    async def generate_token_pairs(self, user_email) -> dict:
+        payload = {"user_email": user_email}
         access_token = await self.create_token(payload, timedelta(minutes=5))
         refresh_token = await self.create_token(payload, timedelta(days=1))
         return {"access_token": access_token, "refresh_token": refresh_token}
@@ -42,6 +42,15 @@ class AuthHandler:
         token = jwt.encode(payload | time_payload, self.secret, self.algorithm)
         print(token)
         return token
+
+    async def decode_token(self, token: str) -> dict:
+        try:
+            payload = jwt.decode(token, self.secret, [self.algorithm])
+            return payload
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Time is out')
+        except jwt.InvalidTokenError:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Invalid token')
 
 
 auth_handler = AuthHandler()
