@@ -7,6 +7,7 @@ from database.session_dependencies import get_async_session
 
 router_users = APIRouter()
 
+
 @router_users.post("/create", status_code=status.HTTP_201_CREATED)
 async def create_user(new_user: RegisterUserFields, session: AsyncSession = Depends(get_async_session)) -> BaseFields:
     await create_user_in_db(new_user.email, new_user.name, new_user.password, session)
