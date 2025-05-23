@@ -27,7 +27,7 @@ class AuthHandler:
         if not is_valid_password:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Incorrect password")
 
-        tokens = await self.generate_token_pairs(user.id)
+        tokens = await self.generate_token_pairs(user.email)
         return tokens
 
     async def generate_token_pairs(self, user_email) -> dict:
