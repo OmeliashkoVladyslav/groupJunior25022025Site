@@ -27,7 +27,7 @@ class AuthHandler:
         if not is_valid_password:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Incorrect password")
 
-        tokens = await self.generate_token_pairs(user.id)
+        tokens = await self.generate_token_pairs(user.email)
         return tokens
 
     async def generate_token_pairs(self, user_email) -> dict:
@@ -48,9 +48,9 @@ class AuthHandler:
             payload = jwt.decode(token, self.secret, [self.algorithm])
             return payload
         except jwt.ExpiredSignatureError:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Time is out')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Time is out")
         except jwt.InvalidTokenError:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Invalid token')
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid token")
 
 
 auth_handler = AuthHandler()
