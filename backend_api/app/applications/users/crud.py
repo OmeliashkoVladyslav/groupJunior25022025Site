@@ -11,10 +11,10 @@ async def create_user_in_db(email, name, password, session: AsyncSession) -> Use
     hashed_password = await PasswordEncrypt.get_password_hash(password)
     new_user = User(email=email, hashed_password=hashed_password, name=name)
     session.add(new_user)
-    await session.commit()
-    await session.refresh(new_user)
-    return new_user
 
+    await session.commit()
+    # await session.refresh(new_user)
+    return new_user
 
 
 async def get_user_by_email(email, session: AsyncSession) -> User | None:
@@ -22,14 +22,14 @@ async def get_user_by_email(email, session: AsyncSession) -> User | None:
     result = await session.execute(query)
     return result.scalar_one_or_none()
 
+
 async def activate_user_account(user_uuid, session: AsyncSession) -> None:
     query = select(User).filter(User.uuid_data == user_uuid)
     result = await session.execute(query)
     user = result.scalar_one_or_none()
     if not user:
-        raise HTTPException(status_code=404, detail='Provided data does not belongs ')
+        raise HTTPException(status_code=404, detail='Provided data does not belong to known user')
 
     user.is_verified = True
     session.add(user)
     await session.commit()
-
