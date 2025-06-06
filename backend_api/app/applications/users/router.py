@@ -13,5 +13,6 @@ async def create_user(new_user: RegisterUserFields, session: AsyncSession = Depe
     user = await get_user_by_email(new_user.email, session)
     if user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Already exists')
+
     await create_user_in_db(new_user.email, new_user.name, new_user.password, session)
     return new_user
